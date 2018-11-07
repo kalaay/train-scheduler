@@ -1,0 +1,40 @@
+.jumbotron{
+    background-color: #34675c;
+
+    color: white;
+    border-bottom-color: blue
+
+}
+.dataOutput{
+    border-block-end-color: blueviolet;
+}
+
+.card-header{
+    background-color: #7da3a1;
+
+    color: white;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#add-train{
+    background-color: #324851;
+    margin-bottom: 15px;
+    color: white;
+}
+
+footer{
+    margin-top: 15px;
+    background-color: rgb(69, 243, 121);
+
+}
+
+.dataOutput{
+    margin-top: 1em;
+}
+
+.card-body{
+    background-color: #e8eff1;
+    
+
+}

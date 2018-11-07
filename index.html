@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Train Scheduler</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+<body>
+
+
+    <div class="container">
+
+        <br>
+
+        <!-- Jumbotron -->
+        <div class="jumbotron">
+            <h1 class="text-center">Any Time Is Train Time</h1>
+            <h2 class="text-center">Choo Choo. Chee Chee</h2>
+        </div>
+        <table class="table">
+            <thead>
+                    <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            Current Train Schedule
+                        </div>
+                        <div class="card-body">
+                            <tr>
+                                <th scope="col">Train Name</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Frequency (min)</th>
+                                <th scope="col">Next Arrival</th>
+                                <th scope="col">Minutes Away</th>
+                            </tr>
+            </thead>
+            <tbody id="dataOutput">
+
+            </tbody>
+        </table>
+
+        <div class="row">
+
+            <!-- Sign-Up Card-->
+            <div class="col-lg-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        Add Train
+                    </div>
+                    <div class="card-body">
+                        <!-- Sign-up Form (note the various input "types")-->
+                        <form role="form">
+                            <div class="form-group row">
+                                <label for="name-input">Train Name:</label>
+                                <input class="form-control" id="train-input" type="text">
+                            </div>
+                            <div class="form-group row">
+                                <label for="role-input">Destination:</label>
+                                <input class="form-control" id="destination-input" type="text">
+                            </div>
+                            <div class="form-group row">
+                                <label for="frequency-input">First Train Time (HH:hh - military time):</label>
+                                <input class="form-control" id="arrival-input" type="time">
+                            </div>
+                            <div class="form-group row">
+                                <label for="minutes-input">Frequency (min):</label>
+                                <input class="form-control" id="frequency-input" type="number">
+                            </div>
+                            <button class="btn btn-default" id="add-train" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- jQuery -->
+            <script src="https://code.jquery.com/jquery.js"></script>
+
+            <!-- Firebase Reference -->
+            <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+            <!-- Moment.js Reference -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+
+            <!-- Script -->
+            <script>
+                var config = {
+                    apiKey: "AIzaSyA0J6qH3x_1GxoJ4qGq92DoZGppExDT0NM",
+                    authDomain: "train-scheduler-c47e8.firebaseapp.com",
+                    databaseURL: "https://train-scheduler-c47e8.firebaseio.com",
+                    projectId: "train-scheduler-c47e8",
+                    storageBucket: "train-scheduler-c47e8.appspot.com",
+                    messagingSenderId: "220467622592"
+                };
+                firebase.initializeApp(config);
+
+                var database = firebase.database();
+
+                // Capture Button Click
+                $("#add-train").on("click", function (event) {
+                    event.preventDefault();
+
+                    // Capture User Inputs and store into variables
+                    var trainName = $("#train-input").val().trim();
+                    var destination = $("#destination-input").val().trim();
+                    var frequency = $("#frequency-input").val().trim();
+                    var nextArrival = $("#arrival-input").val().trim();
+                    var minutesAway = 0;
+
+
+                    // Console log each of the user inputs to confirm we are receiving them
+                    console.log("Train Name  " + trainName);
+                    console.log("Destination  " + destination);
+                    console.log("Frequency (min)  " + frequency);
+                    console.log("Next Arriral " + nextArrival);
+                    console.log("Minutes Away " + minutesAway);
+
+
+
+                    database.ref().push({
+                        trainName: trainName,
+                        destination: destination,
+                        frequency: frequency,
+                        nextArrival: nextArrival,
+                        minutesAway: minutesAway,
+
+                    });
+
+                    //Firebase 
+                    database.ref().on("child_added", function (snapshot) {
+                        var sv = snapshot.val();
+
+
+                        console.log("Minutes Away1 " + sv.minutesAway);
+
+                        var minutesAway = moment().diff(moment(sv.frequency, "mm"), "frequency");
+                        var minutesAway = (sv.frequency + sv.nextArrival);
+                        console.log("Minutes Away2 " + minutesAway);
+
+                        var newRow = $("<tr>");
+                        newRow.append("<td>" + sv.trainName + "</td>");
+                        newRow.append("<td>" + sv.destination + "</td>");
+                        newRow.append("<td>" + sv.frequency + "</td>");
+                        newRow.append("<td>" + sv.nextArrival + "</td>");
+                        newRow.append("<td>" + sv.minutesAway + "</td>");
+
+                        $("#dataOutput").append(newRow);
+
+                    });
+
+                });
+            </script>
+
+</body>
+<footer>
+   <div>
+       <div>
+           
+       </div>
+   </div> 
+
+</footer>
+</html>
